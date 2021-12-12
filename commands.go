@@ -7,7 +7,7 @@ import (
 )
 
 func Exec(command string) {
-	exec.Command("sh", "-c", command).Start()
+	exec.Command("sh", "-c", command).Run()
 }
 
 func Bind(bindArgs BindCmd) error {

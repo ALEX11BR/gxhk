@@ -39,8 +39,7 @@ func StartDaemon(args Args) {
 
 	configFiles := append(args.ConfigFiles, "/etc/gxhkrc")
 	for _, configFile := range configFiles {
-		command := exec.Command(configFile)
-		command.Start()
+		go exec.Command(configFile).Run()
 	}
 
 	HandleHotkeys()

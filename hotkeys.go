@@ -21,13 +21,13 @@ func HandleHotkeys() {
 				mods: ev.State | IgnoreMods,
 				key:  ev.Detail,
 			}
-			Exec(KeyPressCommands.Get(hotkey))
+			go Exec(KeyPressCommands.Get(hotkey))
 		case xproto.KeyReleaseEvent:
 			hotkey := Hotkey{
 				mods: ev.State | IgnoreMods,
 				key:  ev.Detail,
 			}
-			Exec(KeyReleaseCommands.Get(hotkey))
+			go Exec(KeyReleaseCommands.Get(hotkey))
 		}
 	}
 }

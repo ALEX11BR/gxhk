@@ -44,6 +44,13 @@ func SocketLoop() {
 				res.Status = 1
 				res.Message = err.Error()
 			}
+		case command.Info != nil:
+			hotkey := command.Info.Hotkey
+			if hotkey != "" {
+				res.Message = GetInfo(command.Info.Hotkey)
+			} else {
+				res.Message = GetAllInfo()
+			}
 		}
 
 		encoder.Encode(res)

@@ -14,10 +14,10 @@ var (
 	X      *xgbutil.XUtil
 
 	KeyPressCommands     = NewRWLockedMap()
-	KeyPressDescriptions = make(map[string]string)
+	KeyPressDescriptions = NewDescriptionsMap()
 
 	KeyReleaseCommands     = NewRWLockedMap()
-	KeyReleaseDescriptions = make(map[string]string)
+	KeyReleaseDescriptions = NewDescriptionsMap()
 )
 
 func StartDaemon(args Args) {

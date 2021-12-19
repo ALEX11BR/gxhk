@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os/exec"
 
 	"github.com/jezek/xgbutil/keybind"
@@ -8,6 +9,21 @@ import (
 
 func Exec(command string) {
 	exec.Command("sh", "-c", command).Run()
+}
+
+func GetDescription(description string, command string) string {
+	if description != "" {
+		return description
+	} else {
+		return fmt.Sprintf("Spawn '%s'", command)
+	}
+}
+
+func OnEventInfo(infos *string, hotkey string, eventName string, description string) {
+	if *infos != "" {
+		*infos += "\n"
+	}
+	*infos += fmt.Sprintf("On %s %s: %s", hotkey, eventName, description)
 }
 
 func Bind(bindArgs BindCmd) error {
@@ -34,10 +50,11 @@ func Bind(bindArgs BindCmd) error {
 		}
 	}
 
+	description := GetDescription(bindArgs.Description, bindArgs.RunCommand)
 	if bindArgs.Released {
-		KeyReleaseDescriptions[bindArgs.Hotkey] = bindArgs.Description
+		KeyReleaseDescriptions.Set(bindArgs.Hotkey, description)
 	} else {
-		KeyPressDescriptions[bindArgs.Hotkey] = bindArgs.Description
+		KeyPressDescriptions.Set(bindArgs.Hotkey, description)
 	}
 
 	return nil
@@ -67,10 +84,36 @@ func Unbind(unbindArgs UnbindCmd) error {
 	}
 
 	if unbindArgs.Released {
-		delete(KeyReleaseDescriptions, unbindArgs.Hotkey)
+		KeyReleaseDescriptions.Delete(unbindArgs.Hotkey)
 	} else {
-		delete(KeyPressDescriptions, unbindArgs.Hotkey)
+		KeyPressDescriptions.Delete(unbindArgs.Hotkey)
 	}
 
 	return nil
+}
+
+func GetInfo(hotkey string) (info string) {
+	pressInfo := KeyPressDescriptions.Get(hotkey)
+	if pressInfo != "" {
+		OnEventInfo(&info, hotkey, "press", pressInfo)
+	}
+
+	releaseInfo := KeyReleaseDescriptions.Get(hotkey)
+	if releaseInfo != "" {
+		OnEventInfo(&info, hotkey, "release", releaseInfo)
+	}
+
+	return
+}
+
+func GetAllInfo() (info string) {
+	KeyPressDescriptions.Iter(func(hotkey, description string) {
+		OnEventInfo(&info, hotkey, "press", description)
+	})
+
+	KeyReleaseDescriptions.Iter(func(hotkey, description string) {
+		OnEventInfo(&info, hotkey, "release", description)
+	})
+
+	return
 }

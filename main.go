@@ -18,7 +18,7 @@ func main() {
 			fmt.Fprintln(os.Stderr, res.Message)
 		}
 		os.Exit(res.Status)
+	} else {
+		StartDaemon(args)
 	}
-
-	StartDaemon(args)
 }

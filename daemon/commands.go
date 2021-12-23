@@ -13,7 +13,7 @@ func Exec(command string) {
 	exec.Command("sh", "-c", command).Run()
 }
 
-func GetDescription(description string, command string) string {
+func MakeDescription(description string, command string) string {
 	if description != "" {
 		return description
 	} else {
@@ -21,7 +21,7 @@ func GetDescription(description string, command string) string {
 	}
 }
 
-func OnEventInfo(infos *string, hotkey string, eventName string, description string) {
+func AddEventInfo(infos *string, hotkey string, eventName string, description string) {
 	if *infos != "" {
 		*infos += "\n"
 	}
@@ -56,7 +56,7 @@ func Bind(bindArgs common.BindCmd) error {
 		}
 	}
 
-	description := GetDescription(bindArgs.Description, bindArgs.RunCommand)
+	description := MakeDescription(bindArgs.Description, bindArgs.RunCommand)
 	if bindArgs.Released {
 		KeyReleaseDescriptions.Set(bindArgs.Hotkey, description)
 	} else {
@@ -105,12 +105,12 @@ func Unbind(unbindArgs common.UnbindCmd) error {
 func GetInfo(hotkey string) (info string) {
 	pressInfo := KeyPressDescriptions.Get(hotkey)
 	if pressInfo != "" {
-		OnEventInfo(&info, hotkey, "press", pressInfo)
+		AddEventInfo(&info, hotkey, "press", pressInfo)
 	}
 
 	releaseInfo := KeyReleaseDescriptions.Get(hotkey)
 	if releaseInfo != "" {
-		OnEventInfo(&info, hotkey, "release", releaseInfo)
+		AddEventInfo(&info, hotkey, "release", releaseInfo)
 	}
 
 	return
@@ -118,11 +118,11 @@ func GetInfo(hotkey string) (info string) {
 
 func GetAllInfo() (info string) {
 	KeyPressDescriptions.Iter(func(hotkey, description string) {
-		OnEventInfo(&info, hotkey, "press", description)
+		AddEventInfo(&info, hotkey, "press", description)
 	})
 
 	KeyReleaseDescriptions.Iter(func(hotkey, description string) {
-		OnEventInfo(&info, hotkey, "release", description)
+		AddEventInfo(&info, hotkey, "release", description)
 	})
 
 	return

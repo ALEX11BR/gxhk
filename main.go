@@ -13,10 +13,6 @@ func main() {
 	args, parser := common.ParseArgs()
 
 	if parser.Subcommand() != nil {
-		if args.ConfigFiles != nil {
-			parser.Fail("You can't specify config files if you want to send commands to the running daemon.")
-		}
-
 		res := client.SendCommand(args)
 		if res.Message != "" {
 			fmt.Fprintln(os.Stderr, res.Message)

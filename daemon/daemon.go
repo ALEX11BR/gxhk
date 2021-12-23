@@ -5,6 +5,7 @@ import (
 	"net"
 	"os"
 	"os/exec"
+	"path"
 
 	"github.com/alex11br/gxhk/common"
 	"github.com/jezek/xgbutil"
@@ -41,8 +42,18 @@ func StartDaemon(args common.Args) int {
 
 	go SocketLoop()
 
-	configFiles := append(args.ConfigFiles, "/etc/gxhkrc")
-	for _, configFile := range configFiles {
+	if !args.NoDefaultConfigs {
+		homeConfig := os.Getenv("XDG_CONFIG_HOME")
+		if homeConfig == "" {
+			homeDir, _ := os.UserHomeDir()
+			homeConfig = path.Join(homeDir, ".config")
+		}
+		homeConfig = path.Join(homeConfig, "gxhk", "gxhkrc")
+
+		go exec.Command("/etc/gxhkrc").Run()
+		go exec.Command(homeConfig).Run()
+	}
+	for _, configFile := range args.ConfigFiles {
 		go exec.Command(configFile).Run()
 	}
 

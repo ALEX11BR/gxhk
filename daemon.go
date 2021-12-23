@@ -13,10 +13,10 @@ var (
 	Socket net.Listener
 	X      *xgbutil.XUtil
 
-	KeyPressCommands     = NewRWLockedMap()
+	KeyPressCommands     = NewCommandsMap()
 	KeyPressDescriptions = NewDescriptionsMap()
 
-	KeyReleaseCommands     = NewRWLockedMap()
+	KeyReleaseCommands     = NewCommandsMap()
 	KeyReleaseDescriptions = NewDescriptionsMap()
 )
 

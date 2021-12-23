@@ -5,33 +5,33 @@ import (
 	"sync"
 )
 
-type RWLockedMap struct {
+type CommandsMap struct {
 	Map    map[Hotkey]string
 	RWLock sync.RWMutex
 }
 
-func (r *RWLockedMap) Get(hotkey Hotkey) string {
+func (r *CommandsMap) Get(hotkey Hotkey) string {
 	r.RWLock.RLock()
 	defer r.RWLock.RUnlock()
 
 	return r.Map[hotkey]
 }
 
-func (r *RWLockedMap) Set(hotkey Hotkey, command string) {
+func (r *CommandsMap) Set(hotkey Hotkey, command string) {
 	r.RWLock.Lock()
 	defer r.RWLock.Unlock()
 
 	r.Map[hotkey] = command
 }
 
-func (r *RWLockedMap) Delete(hotkey Hotkey) {
+func (r *CommandsMap) Delete(hotkey Hotkey) {
 	r.RWLock.Lock()
 	defer r.RWLock.Unlock()
 
 	delete(r.Map, hotkey)
 }
 
-func (r *RWLockedMap) IsEmpty(hotkey Hotkey) bool {
+func (r *CommandsMap) IsEmpty(hotkey Hotkey) bool {
 	r.RWLock.RLock()
 	defer r.RWLock.RUnlock()
 
@@ -39,8 +39,8 @@ func (r *RWLockedMap) IsEmpty(hotkey Hotkey) bool {
 	return !isNotEmpty
 }
 
-func NewRWLockedMap() RWLockedMap {
-	return RWLockedMap{
+func NewCommandsMap() CommandsMap {
+	return CommandsMap{
 		Map: make(map[Hotkey]string),
 	}
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os/exec"
 
@@ -30,6 +31,10 @@ func Bind(bindArgs BindCmd) error {
 	mods, keys, err := keybind.ParseString(X, bindArgs.Hotkey)
 	if err != nil {
 		return err
+	}
+
+	if mods&IgnoreMods > 0 {
+		return errors.New("hotkeys can't rely on the status of the Caps Lock or the Num Lock (Mod2)")
 	}
 
 	for _, key := range keys {
@@ -64,6 +69,10 @@ func Unbind(unbindArgs UnbindCmd) error {
 	mods, keys, err := keybind.ParseString(X, unbindArgs.Hotkey)
 	if err != nil {
 		return err
+	}
+
+	if mods&IgnoreMods > 0 {
+		return errors.New("hotkeys can't rely on the status of the Caps Lock or the Num Lock (Mod2)")
 	}
 
 	for _, key := range keys {

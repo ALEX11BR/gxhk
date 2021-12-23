@@ -1,14 +1,16 @@
-package main
+package client
 
 import (
 	"encoding/json"
 	"net"
+
+	"github.com/alex11br/gxhk/common"
 )
 
-func SendCommand(args Args) (res Response) {
+func SendCommand(args common.Args) (res common.Response) {
 	conn, err := net.Dial("unix", args.SocketPath)
 	if err != nil {
-		return Response{
+		return common.Response{
 			Status:  1,
 			Message: err.Error(),
 		}

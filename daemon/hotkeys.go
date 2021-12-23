@@ -1,4 +1,4 @@
-package main
+package daemon
 
 import (
 	"github.com/jezek/xgb"

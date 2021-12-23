@@ -1,4 +1,4 @@
-package main
+package daemon
 
 import (
 	"fmt"
@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 
+	"github.com/alex11br/gxhk/common"
 	"github.com/jezek/xgbutil"
 	"github.com/jezek/xgbutil/keybind"
 )
@@ -21,7 +22,7 @@ var (
 	KeyReleaseDescriptions = NewDescriptionsMap()
 )
 
-func StartDaemon(args Args) int {
+func StartDaemon(args common.Args) int {
 	var err error
 	Socket, err = GetSocket(args.SocketPath)
 	if err != nil {

@@ -1,10 +1,11 @@
-package main
+package daemon
 
 import (
 	"errors"
 	"fmt"
 	"os/exec"
 
+	"github.com/alex11br/gxhk/common"
 	"github.com/jezek/xgbutil/keybind"
 )
 
@@ -27,7 +28,7 @@ func OnEventInfo(infos *string, hotkey string, eventName string, description str
 	*infos += fmt.Sprintf("On %s %s: %s", hotkey, eventName, description)
 }
 
-func Bind(bindArgs BindCmd) error {
+func Bind(bindArgs common.BindCmd) error {
 	mods, keys, err := keybind.ParseString(X, bindArgs.Hotkey)
 	if err != nil {
 		return err
@@ -65,7 +66,7 @@ func Bind(bindArgs BindCmd) error {
 	return nil
 }
 
-func Unbind(unbindArgs UnbindCmd) error {
+func Unbind(unbindArgs common.UnbindCmd) error {
 	mods, keys, err := keybind.ParseString(X, unbindArgs.Hotkey)
 	if err != nil {
 		return err

@@ -1,10 +1,12 @@
-package main
+package daemon
 
 import (
 	"encoding/json"
 	"fmt"
 	"net"
 	"os"
+
+	"github.com/alex11br/gxhk/common"
 )
 
 func GetSocket(socketPath string) (socket net.Listener, err error) {
@@ -18,11 +20,11 @@ func GetSocket(socketPath string) (socket net.Listener, err error) {
 
 func HandleConnection(conn net.Conn) {
 	decoder := json.NewDecoder(conn)
-	var command Args
+	var command common.Args
 	decoder.Decode(&command)
 
 	encoder := json.NewEncoder(conn)
-	res := NoError
+	res := common.NoError
 
 	switch {
 	case command.Bind != nil:

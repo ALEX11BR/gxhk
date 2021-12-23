@@ -19,6 +19,6 @@ func main() {
 		}
 		os.Exit(res.Status)
 	} else {
-		StartDaemon(args)
+		os.Exit(StartDaemon(args))
 	}
 }

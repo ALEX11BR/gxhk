@@ -2,14 +2,16 @@ package main
 
 import (
 	"encoding/json"
-	"log"
 	"net"
 )
 
 func SendCommand(args Args) (res Response) {
 	conn, err := net.Dial("unix", args.SocketPath)
 	if err != nil {
-		log.Fatal(err)
+		return Response{
+			Status:  1,
+			Message: err.Error(),
+		}
 	}
 	defer conn.Close()
 

@@ -1,8 +1,9 @@
 package main
 
 import (
-	"log"
+	"fmt"
 	"net"
+	"os"
 	"os/exec"
 
 	"github.com/jezek/xgbutil"
@@ -20,17 +21,19 @@ var (
 	KeyReleaseDescriptions = NewDescriptionsMap()
 )
 
-func StartDaemon(args Args) {
+func StartDaemon(args Args) int {
 	var err error
 	Socket, err = GetSocket(args.SocketPath)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Fprintln(os.Stderr, err)
+		return 1
 	}
 	defer Socket.Close()
 
 	X, err = xgbutil.NewConn()
 	if err != nil {
-		log.Fatal(err)
+		fmt.Fprintln(os.Stderr, err)
+		return 1
 	}
 
 	keybind.Initialize(X)
@@ -43,4 +46,6 @@ func StartDaemon(args Args) {
 	}
 
 	HandleHotkeys()
+
+	return 0
 }

@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/json"
-	"log"
+	"fmt"
 	"net"
 	"os"
 )
@@ -55,7 +55,7 @@ func SocketLoop() {
 	for {
 		conn, err := Socket.Accept()
 		if err != nil {
-			log.Println(err)
+			fmt.Fprintln(os.Stderr, err)
 			continue
 		}
 		go HandleConnection(conn)

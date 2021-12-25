@@ -28,13 +28,13 @@ func HotkeyFromStr(str string) (hotkeys []Hotkey, err error) {
 	}
 
 	for _, key := range keys {
-		hotkeys = append(hotkeys, Hotkey{mods | IgnoreMods, key})
+		hotkeys = append(hotkeys, Hotkey{mods, key})
 	}
 	return
 }
 
 func (h Hotkey) ToStr() (str string) {
-	str = keybind.ModifierString(h.mods &^ IgnoreMods)
+	str = keybind.ModifierString(h.mods)
 	if str != "" {
 		str += "-"
 	}
@@ -45,24 +45,24 @@ func (h Hotkey) ToStr() (str string) {
 }
 
 func (h Hotkey) Grab() error {
-	return keybind.GrabChecked(X, X.RootWin(), h.mods&^IgnoreMods, h.key)
+	return keybind.GrabChecked(X, X.RootWin(), h.mods, h.key)
 }
 
 func (h Hotkey) Ungrab() {
-	keybind.Ungrab(X, X.RootWin(), h.mods&^IgnoreMods, h.key)
+	keybind.Ungrab(X, X.RootWin(), h.mods, h.key)
 }
 
 func HandleEvent(event xgb.Event) {
 	switch ev := event.(type) {
 	case xproto.KeyPressEvent:
 		hotkey := Hotkey{
-			mods: ev.State | IgnoreMods,
+			mods: ev.State &^ IgnoreMods,
 			key:  ev.Detail,
 		}
 		Exec(KeyPressCommands.Get(hotkey))
 	case xproto.KeyReleaseEvent:
 		hotkey := Hotkey{
-			mods: ev.State | IgnoreMods,
+			mods: ev.State &^ IgnoreMods,
 			key:  ev.Detail,
 		}
 		Exec(KeyReleaseCommands.Get(hotkey))

@@ -3,9 +3,9 @@
 `gxhk` is a hotkey daemon for X, something like [`sxhkd`](https://github.com/baskerville/sxhkd). What makes it special is the fact that it can be configured on-the-fly the same way as [`bspwm`](https://github.com/baskerville/bspwm): through a socket in which commands to bind keys, to unbind previously bound keys, or even show infos about the bound keys can be sent.
 
 ## Usage
-Hotkeys are case-insensitive, with this syntax: `modifier1-modifier2-...-key`. For more info on this, check [this link](https://github.com/jezek/xgbutil/blob/master/keybind/keybind.go#L125) of the underlaying library.
+Hotkeys are case-insensitive, with this syntax: `modifier1-modifier2-...-key`. For more info on this, check [this link](https://pkg.go.dev/github.com/alex11br/xgbutil@v0.0.0-20211225011412-f2944427ac98/keybind#hdr-Key_sequence_format) of the underlaying library. Note that, for this moment, controling for the lock (Caps Lock) and the mod2 (Num Lock) modifiers isn't allowed.
 
-The app uses by default some config files: `/etc/gxhkrc` and `$XDG_CONFIG_HOME/gxhk/gxhkrc`. Using the `-C` flag, they can be ignored, and with the `-c` flag, new ones can be used. Using the `-s` flag, a different socket besides the default `/tmp/gxhk.sock` can be used.
+The app uses by default some config files: `/etc/gxhkrc` and `$XDG_CONFIG_HOME/gxhk/gxhkrc`. Using the `-C` flag, they can be ignored, and with the `-c` flag, new ones can be specified. Using the `-s` flag, a different socket besides the default `/tmp/gxhk.sock` can be specified.
 
 Here are some examples:
 ```sh

@@ -16,11 +16,11 @@ var (
 	Socket net.Listener
 	X      *xgbutil.XUtil
 
-	KeyPressCommands     = NewCommandsMap()
-	KeyPressDescriptions = NewDescriptionsMap()
+	KeyPressCommands     = NewHotkeyMap()
+	KeyPressDescriptions = NewHotkeyMap()
 
-	KeyReleaseCommands     = NewCommandsMap()
-	KeyReleaseDescriptions = NewDescriptionsMap()
+	KeyReleaseCommands     = NewHotkeyMap()
+	KeyReleaseDescriptions = NewHotkeyMap()
 )
 
 func StartDaemon(args common.Args) int {

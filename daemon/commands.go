@@ -1,12 +1,10 @@
 package daemon
 
 import (
-	"errors"
 	"fmt"
 	"os/exec"
 
 	"github.com/alex11br/gxhk/common"
-	"github.com/alex11br/xgbutil/keybind"
 )
 
 func Exec(command string) {
@@ -29,100 +27,103 @@ func AddEventInfo(infos *string, hotkey string, eventName string, description st
 }
 
 func Bind(bindArgs common.BindCmd) error {
-	mods, keys, err := keybind.ParseString(X, bindArgs.Hotkey)
+	hotkeys, err := HotkeyFromStr(bindArgs.Hotkey)
 	if err != nil {
 		return err
 	}
 
-	if mods&IgnoreMods > 0 {
-		return errors.New("hotkeys can't rely on the status of the Caps Lock or the Num Lock (Mod2)")
+	newlyBound := make([]Hotkey, 0)
+	for _, hotkey := range hotkeys {
+		if KeyPressCommands.IsEmpty(hotkey) && KeyReleaseCommands.IsEmpty(hotkey) {
+			err = hotkey.Grab()
+			if err != nil {
+				for _, toUnbind := range newlyBound {
+					toUnbind.Ungrab()
+				}
+				return err
+			}
+
+			newlyBound = append(newlyBound, hotkey)
+		}
 	}
 
-	for _, key := range keys {
-		hotkey := Hotkey{
-			mods | IgnoreMods,
-			key,
-		}
-
-		err = keybind.GrabChecked(X, X.RootWin(), mods, key)
-		if err != nil {
-			return err
+	for i, hotkey := range hotkeys {
+		var description string
+		if i == 0 {
+			description = MakeDescription(bindArgs.Description, bindArgs.RunCommand)
+		} else {
+			description = ""
 		}
 
 		if bindArgs.Released {
 			KeyReleaseCommands.Set(hotkey, bindArgs.RunCommand)
+			KeyReleaseDescriptions.Set(hotkey, description)
 		} else {
 			KeyPressCommands.Set(hotkey, bindArgs.RunCommand)
+			KeyPressDescriptions.Set(hotkey, description)
 		}
-	}
-
-	description := MakeDescription(bindArgs.Description, bindArgs.RunCommand)
-	if bindArgs.Released {
-		KeyReleaseDescriptions.Set(bindArgs.Hotkey, description)
-	} else {
-		KeyPressDescriptions.Set(bindArgs.Hotkey, description)
 	}
 
 	return nil
 }
 
 func Unbind(unbindArgs common.UnbindCmd) error {
-	mods, keys, err := keybind.ParseString(X, unbindArgs.Hotkey)
+	hotkeys, err := HotkeyFromStr(unbindArgs.Hotkey)
 	if err != nil {
 		return err
 	}
 
-	if mods&IgnoreMods > 0 {
-		return errors.New("hotkeys can't rely on the status of the Caps Lock or the Num Lock (Mod2)")
-	}
-
-	for _, key := range keys {
-		hotkey := Hotkey{
-			mods | IgnoreMods,
-			key,
+	for _, hotkey := range hotkeys {
+		if KeyPressCommands.IsEmpty(hotkey) && KeyReleaseCommands.IsEmpty(hotkey) {
+			hotkey.Ungrab()
 		}
 
 		if unbindArgs.Released {
 			KeyReleaseCommands.Delete(hotkey)
+			KeyReleaseDescriptions.Delete(hotkey)
 		} else {
 			KeyPressCommands.Delete(hotkey)
+			KeyPressDescriptions.Delete(hotkey)
 		}
-
-		if KeyPressCommands.IsEmpty(hotkey) && KeyReleaseCommands.IsEmpty(hotkey) {
-			keybind.Ungrab(X, X.RootWin(), mods, key)
-		}
-	}
-
-	if unbindArgs.Released {
-		KeyReleaseDescriptions.Delete(unbindArgs.Hotkey)
-	} else {
-		KeyPressDescriptions.Delete(unbindArgs.Hotkey)
 	}
 
 	return nil
 }
 
-func GetInfo(hotkey string) (info string) {
+func GetInfo(hotkeyStr string) (res common.Response) {
+	hotkeys, err := HotkeyFromStr(hotkeyStr)
+	if err != nil {
+		return common.Response{
+			Status:  1,
+			Message: err.Error(),
+		}
+	}
+	hotkey := hotkeys[0]
+
 	pressInfo := KeyPressDescriptions.Get(hotkey)
 	if pressInfo != "" {
-		AddEventInfo(&info, hotkey, "press", pressInfo)
+		AddEventInfo(&res.Message, hotkeyStr, "press", pressInfo)
 	}
 
 	releaseInfo := KeyReleaseDescriptions.Get(hotkey)
 	if releaseInfo != "" {
-		AddEventInfo(&info, hotkey, "release", releaseInfo)
+		AddEventInfo(&res.Message, hotkeyStr, "release", releaseInfo)
 	}
 
 	return
 }
 
 func GetAllInfo() (info string) {
-	KeyPressDescriptions.Iter(func(hotkey, description string) {
-		AddEventInfo(&info, hotkey, "press", description)
+	KeyPressDescriptions.ForEach(func(hotkey Hotkey, description string) {
+		if description != "" {
+			AddEventInfo(&info, hotkey.ToStr(), "press", description)
+		}
 	})
 
-	KeyReleaseDescriptions.Iter(func(hotkey, description string) {
-		AddEventInfo(&info, hotkey, "release", description)
+	KeyReleaseDescriptions.ForEach(func(hotkey Hotkey, description string) {
+		if description != "" {
+			AddEventInfo(&info, hotkey.ToStr(), "release", description)
+		}
 	})
 
 	return

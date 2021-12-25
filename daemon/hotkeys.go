@@ -1,6 +1,9 @@
 package daemon
 
 import (
+	"errors"
+
+	"github.com/alex11br/xgbutil/keybind"
 	"github.com/jezek/xgb"
 	"github.com/jezek/xgb/xproto"
 )
@@ -10,6 +13,43 @@ var IgnoreMods uint16 = xproto.ModMask2 | xproto.ModMaskLock
 type Hotkey struct {
 	mods uint16
 	key  xproto.Keycode
+}
+
+var NilHotkey Hotkey = Hotkey{0, 0}
+
+func HotkeyFromStr(str string) (hotkeys []Hotkey, err error) {
+	mods, keys, err := keybind.ParseString(X, str)
+	if err != nil {
+		return nil, err
+	}
+
+	if mods&IgnoreMods > 0 {
+		return nil, errors.New("hotkeys can't rely on the status of the Caps Lock or the Num Lock (Mod2)")
+	}
+
+	for _, key := range keys {
+		hotkeys = append(hotkeys, Hotkey{mods | IgnoreMods, key})
+	}
+	return
+}
+
+func (h Hotkey) ToStr() (str string) {
+	str = keybind.ModifierString(h.mods &^ IgnoreMods)
+	if str != "" {
+		str += "-"
+	}
+
+	keysym := keybind.KeysymGet(X, h.key, 0)
+	str += keybind.KeysymToBaseStr(keysym)
+	return
+}
+
+func (h Hotkey) Grab() error {
+	return keybind.GrabChecked(X, X.RootWin(), h.mods&^IgnoreMods, h.key)
+}
+
+func (h Hotkey) Ungrab() {
+	keybind.Ungrab(X, X.RootWin(), h.mods&^IgnoreMods, h.key)
 }
 
 func HandleEvent(event xgb.Event) {

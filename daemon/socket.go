@@ -42,7 +42,7 @@ func HandleConnection(conn net.Conn) {
 	case command.Info != nil:
 		hotkey := command.Info.Hotkey
 		if hotkey != "" {
-			res.Message = GetInfo(command.Info.Hotkey)
+			res = GetInfo(hotkey)
 		} else {
 			res.Message = GetAllInfo()
 		}

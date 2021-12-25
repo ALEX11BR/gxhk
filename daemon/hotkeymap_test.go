@@ -3,7 +3,7 @@ package daemon
 import "testing"
 
 func TestRWLockedMap(t *testing.T) {
-	mapTest := NewCommandsMap()
+	mapTest := NewHotkeyMap()
 	hotkey1, hotkey2 := Hotkey{0, 45}, Hotkey{0, 46}
 	hotkey11, hotkey22 := Hotkey{0, 45}, Hotkey{0, 46}
 

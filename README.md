@@ -22,7 +22,7 @@ $ gxhk info # Let's see what happens now
 On print press: Spawn 'maim ~/screenshot-$(date +%s).png && notify-send "Screenshot saved!"'
 On mod4-shift-return release: Launch terminal
 ```
-
+You can check the [`gxhkrc`](gxhkrc) file for more inspiration, or, once you've installed the app, just copy the default config file like this: `install -Dm755 /etc/gxhkrc ~/.config/gxhk/gxhkrc` and start editing.
 ## Installation
 ### From source
 Run `make build` to build the app, then `sudo make install` to install it.

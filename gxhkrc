@@ -1,0 +1,45 @@
+#!/usr/bin/env sh
+
+## This is the default config file for gxhk.
+## It is literally a shell script that will be executed by gxhk when it starts.
+
+## Across this file we'll be using a mod key for our shortcuts.
+## Mod4 (the Super/Windows/whatever key) is one of the most popular choices in this regard.
+## Mod1 (the Alt key) can be a good alternative here if you need it
+mod=mod4
+
+## All the bindings proposed here will be commented with a single '#'
+## They serve as a source of inspiration for those who haven't yet used such a
+## keybinding program and a source of various examples of how to use this program.
+
+## If you want to bind a key to a command, you do it like this:
+## $ gxhk bind [KEY] [COMMAND] (DESCRIPTION)
+## - KEY can be expresses e.g. 'mod4-a', 'mod4-shift-a', 'backslash', 'control-backslash' etc.
+##   Tip: if you're not sure about the name of a key, run 'xev' and press that key to see its name.
+## - COMMAND is an sh command to be spawned whenever the KEY gets pressed,
+##   or released if the -r flag is passed right before the KEY.
+##   I recommend you to surround the COMMAND in apostrophes (') so that it doesn't get messed up.
+## - DESCRIPTION is an optional human-readable description of the command.
+##   It is useful for the 'gxhk info' command which shows the descriptions (or a fallback which
+##   shows the commands themselves) of all the currently bound commands with their trigger keys.
+
+## Presented below are some GENERAL COMMANDS:
+
+## These two make the brightness keys do what they're supposed to do.
+## For this to work, you need to install either xorg-xbacklight or acpilight.
+#gxhk bind XF86MonBrightnessUp 'xbacklight -inc 5' 'Increase the screen brightness'
+#gxhk bind XF86MonBrightnessDown 'xbacklight -dec 5' 'Decrease the screen brightness'
+
+## This one opens the $TERMINAL when the chosen mod key and the Enter key are pressed together.
+## It even uses 'xterm' as a backup if the $TERMINAL is not set.
+#gxhk bind $mod-Return '${TERMINAL:-xterm}' 'Launch the terminal'
+
+## This one binds the PrintScreen key to a command which saves a screenshot
+## with a time-based file name and sends a notification if it gets saved succesfully
+## For this to work, you need to instll maim and run in the background a notification daemon.
+#gxhk bind Print 'maim ~/screenshot-$(date +%s).png && notify-send "Screenshot saved!"'
+
+## This one opens an app menu when the chosen mod key and the d key get released together.
+## so that all the other bindings which use this key won't be affected
+## For this to work, you need to install rofi.
+#gxhk bind -r $mod-d 'rofi -show drun -show-icons' 'Launch the app menu'

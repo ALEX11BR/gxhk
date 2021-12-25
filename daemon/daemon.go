@@ -8,8 +8,8 @@ import (
 	"path"
 
 	"github.com/alex11br/gxhk/common"
-	"github.com/jezek/xgbutil"
-	"github.com/jezek/xgbutil/keybind"
+	"github.com/alex11br/xgbutil"
+	"github.com/alex11br/xgbutil/keybind"
 )
 
 var (

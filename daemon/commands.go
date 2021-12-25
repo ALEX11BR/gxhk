@@ -6,7 +6,7 @@ import (
 	"os/exec"
 
 	"github.com/alex11br/gxhk/common"
-	"github.com/jezek/xgbutil/keybind"
+	"github.com/alex11br/xgbutil/keybind"
 )
 
 func Exec(command string) {

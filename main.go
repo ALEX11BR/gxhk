@@ -13,9 +13,17 @@ func main() {
 	args, parser := common.ParseArgs()
 
 	if parser.Subcommand() != nil {
+		var stream *os.File
 		res := client.SendCommand(args)
+
+		if res.Status == 0 {
+			stream = os.Stdout
+		} else {
+			stream = os.Stderr
+		}
+
 		if res.Message != "" {
-			fmt.Fprintln(os.Stderr, res.Message)
+			fmt.Fprintln(stream, res.Message)
 		}
 		os.Exit(res.Status)
 	} else {

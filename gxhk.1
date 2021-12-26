@@ -1,0 +1,78 @@
+.TH gxhk 1 2021-12-26 GNU
+
+.SH NAME
+gxhk \- go X hotkey (daemon)
+
+.SH SYNOPSIS
+.SS Start the daemon
+.B gxhk
+[\fB\-s\fR, \fB\-\-socket\fR \fIpath\fR]
+[\fB\-C\fR, \fB\-\-no\-default\-configs\fR]
+[\fB\-c\fR, \fB\-\-config\fR \fIpath\fR]...
+
+.SS Send a command to the running daemon
+.B gxhk
+[\fB\-s\fR, \fB\-\-socket\fR \fIpath\fR]
+\fICOMMAND\fR
+[\fIarguments\fR]...
+
+.SH DESCRIPTION
+.B gxhk
+is a hotkey daemon for X, something like \fBsxhkd\fR. What makes it special is the fact that it can be configured on-the-fly the same way as \fBbspwm\fR: through a socket in which commands to bind keys, to unbind previously bound keys, or even show infos about the bound keys can be sent.
+
+.SH OPTIONS
+.SS Common options
+.TP
+.BR \-h ", " \-\-help
+Display some help information.
+.TP
+.BR \-s ", " \-\-socket " " \fIpath
+Use \fIpath\fR as the socket path instead of the default \fI/tmp/gxhk.sock\fR.
+
+.SS Daemon-start-only options
+.TP
+.BR \-C ", " \-\-no\-default\-configs
+By default, when the daemon starts, it will execute the config file from \fI/etc/gxhkrc\fR and from \fI$XDG_CONFIG_HOME/gxhk/gxhkrc\fR. This flag supresses this behaviour.
+.TP
+.BR \-c ", " \-\-config " " \fIpath
+Run the config file from \fIpath\fR, in addition to all the others.
+
+.SS Daemon commands
+.TP
+\fBgxhk\fR bind [\fB\-r\fR, \fB\-\-released\fR] \fIKEY\fR \fICOMMAND\fR [\fIDESCRIPTION\fR]
+Binds the hotkey expressed by \fIKEY\fR so that whenever it gets pressed (or released if the \fB--released\fR flag is set), \fBsh -c \fICOMMAND\fR gets executed. \fIDESCRIPTION\fR is an optional description to be used in the 'info' command.
+
+.TP
+\fBgxhk\fR unbind [\fB\-r\fR, \fB\-\-released\fR] \fIKEY\fR
+Unbinds the hotkey that was bound using the 'bind' command with the same parameters.
+
+.TP
+\fBgxhk\fR info [\fIKEY\fR]
+Show the currently bound keys with the descriptions of their commands, or, if they haven't been provided, a dummy text which shows the commands they spawn. If the \fIKEY\fR argument is set, show only infos about the commands that hotkey spawns.
+An example of its output is listed below:
+
+.EX
+On mod4-d press: Launch app menu
+On print press: Spawn 'maim ~/screenshot-$(date +%s).png"'
+On mod4-shift-return release: Launch terminal
+.EE
+
+.SH KEYS SYNTAX
+
+Key sequences are human readable strings made up of zero or more modifiers andexactly one key. Namely:
+.IP
+.EX
+[Mod[-Mod[...]]-]KEY
+.EE
+.P
+'Mod' can be one of: shift, control, mod1, mod3, mod4, mod5. You can view which keys activate each modifier using the 'xmodmap' program.
+
+KEY must correspond to a valid keysym. Keysyms can be found by pressing keys using the 'xev' program.
+
+An example key sequence might look like 'Mod4-Control-Shift-t'. The keybinding
+for that key sequence is activated when all three modifiers: mod4, control and
+shift are pressed along with the 't' key.
+
+.EE
+.SH AUTHOR
+Popa Ioan Alexandru (alexioanpopa11@gmail.com)

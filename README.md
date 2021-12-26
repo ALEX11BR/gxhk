@@ -1,6 +1,6 @@
 # gxhk
 
-`gxhk` is a hotkey daemon for X, something like [`sxhkd`](https://github.com/baskerville/sxhkd). What makes it special is the fact that it can be configured on-the-fly the same way as [`bspwm`](https://github.com/baskerville/bspwm): through a socket in which commands to bind keys, to unbind previously bound keys, or even show infos about the bound keys can be sent.
+`gxhk` is a hotkey daemon for X, something like [`sxhkd`](https://github.com/baskerville/sxhkd). What makes it special is the fact that it can be configured on-the-fly the same way as [`bspwm`](https://github.com/baskerville/bspwm): through a socket in which commands to bind keys, to unbind previously bound keys, or even infos about the bound keys can be sent and displayed by clients.
 
 ## Usage
 Hotkeys are case-insensitive, with this syntax: `modifier1-modifier2-...-key`. For more info on this, check [this link](https://pkg.go.dev/github.com/alex11br/xgbutil@v0.0.0-20211225011412-f2944427ac98/keybind#hdr-Key_sequence_format) of the underlaying library. Note that, for this moment, controling for the lock (Caps Lock) and the mod2 (Num Lock) modifiers isn't allowed.
@@ -24,5 +24,10 @@ On mod4-shift-return release: Launch terminal
 ```
 You can check the [`gxhkrc`](gxhkrc) file for more inspiration, or, once you've installed the app, just copy the default config file like this: `install -Dm755 /etc/gxhkrc ~/.config/gxhk/gxhkrc` and start editing.
 ## Installation
+### Arch Linux & friends
+Install the `gxhk-git` package from the AUR the way you like it. For instance, I like it this way:
+```
+yay -S gxhk-git
+```
 ### From source
 Run `make build` to build the app, then `sudo make install` to install it.

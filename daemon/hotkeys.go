@@ -15,9 +15,12 @@ type Hotkey struct {
 	key  xproto.Keycode
 }
 
-var NilHotkey Hotkey = Hotkey{0, 0}
-
-func HotkeyFromStr(str string) (hotkeys []Hotkey, err error) {
+// HotkeysFromStr parses a hotkey string and returns the according Hotkey's.
+// Mods are unambiguous (though we ignore here the Num and Caps Lock).
+// Keycodes aren't, though. For instance, on some layouts, there are 2 keys with different keycodes
+// which map to 'backslash' AKA '\'. And we want to handle them both.
+// This is why we return an array of Hotkey's here. And an error if the string is "naughty".
+func HotkeysFromStr(str string) (hotkeys []Hotkey, err error) {
 	mods, keys, err := keybind.ParseString(X, str)
 	if err != nil {
 		return nil, err
@@ -33,6 +36,8 @@ func HotkeyFromStr(str string) (hotkeys []Hotkey, err error) {
 	return
 }
 
+// ToStr converts the Hotkey into its string representation.
+// This helps us show in a human-firendly way the bound hotkeys in the 'info' command.
 func (h Hotkey) ToStr() (str string) {
 	str = keybind.ModifierString(h.mods)
 	if str != "" {

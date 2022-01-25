@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/alex11br/gxhk/client"
 	"github.com/alex11br/gxhk/common"
@@ -22,9 +23,11 @@ func main() {
 			stream = os.Stderr
 		}
 
-		if res.Message != "" {
-			fmt.Fprintln(stream, res.Message)
+		fmt.Fprint(stream, res.Message)
+		if res.Message != "" && !strings.HasSuffix(res.Message, "\n") {
+			fmt.Fprint(stream, "\n")
 		}
+
 		os.Exit(res.Status)
 	} else {
 		os.Exit(daemon.StartDaemon(args))

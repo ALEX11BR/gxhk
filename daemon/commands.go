@@ -26,10 +26,7 @@ func MakeDescription(description string, command string) string {
 // AddEventInfo handles the logic behind creating a new line and filling it
 // with the infos necessary for the 'info' command for each bound hotkey
 func AddEventInfo(infos *string, hotkey string, eventName string, description string) {
-	if *infos != "" {
-		*infos += "\n"
-	}
-	*infos += fmt.Sprintf("On %s %s: %s", hotkey, eventName, description)
+	*infos += fmt.Sprintf("On %s %s: %s\n", hotkey, eventName, description)
 }
 
 // Bind does the heavy work of binding a hotkey (plus its eventual sisters) to a command.

@@ -5,7 +5,7 @@
 ## Usage
 Hotkeys are case-insensitive, with this syntax: `modifier1-modifier2-...-key`. For more info on this, check [this link](https://pkg.go.dev/github.com/alex11br/xgbutil@v0.0.0-20211225011412-f2944427ac98/keybind#hdr-Key_sequence_format) of the underlaying library. Note that, for this moment, controling for the lock (Caps Lock) and the mod2 (Num Lock) modifiers isn't allowed.
 
-The app uses by default some config files: `/etc/gxhkrc` and `$XDG_CONFIG_HOME/gxhk/gxhkrc`. Using the `-C` flag, they can be ignored, and with the `-c` flag, new ones can be specified. Using the `-s` flag, a different socket besides the default `/tmp/gxhk.sock` can be specified.
+The app uses by default some config files: `/etc/gxhkrc` and `$XDG_CONFIG_HOME/gxhk/gxhkrc`. Using the `-C` flag, they can be ignored, and with the `-c` flag, new ones can be specified. Using the `-s` flag, a different socket besides the default `/tmp/gxhk$DISPLAY.sock` can be specified.
 
 Here are some examples:
 ```sh
